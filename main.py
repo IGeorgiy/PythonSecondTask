@@ -2,12 +2,21 @@ import random
 
 
 class Field:
-    def __init__(self, objects_collection):
+    def __init__(self, ships):
         self.__one_cell_ships = 0
         self.__two_cell_ships = 0
         self.__three_cell_ships = 0
-        self.__field = objects_collection
-        self.__ships = []
+        self.__field = [[EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()], [EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()], [EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()], [EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()], [EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()], [EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()]]
+        if ships is None:
+            self.__ships = []
+        else:
+            self.__ships = ships
+            if len(ships) > 0:
+                for ship in ships:
+                    self.add_ship(ship)
+            else:
+                self.fill_random()
+
 
     def print(self):
             print("  | 1 | 2 | 3 | 4 | 5 | 6 |")
@@ -224,20 +233,17 @@ def enemy_do_shot(enemy, player_field):
     player_field.do_shot(shot[0], shot[1])
 
 
-field1 = [[EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()], [EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()], [EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()], [EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()], [EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()], [EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()]]
-field2 = [[EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()], [EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()], [EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()], [EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()], [EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()], [EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()]]
-field3 = [[EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()], [EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()], [EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()], [EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()], [EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()], [EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()]]
 enemy = Enemy()
 
 print("Поле игрока:")
-player_field = Field(field1)
+player_field = Field([])
 player_field.fill_random()
 player_field.print()
 print("")
 print("Поле врага:")
-enemy_hidden_field = Field(field2)
+enemy_hidden_field = Field([])
 enemy_hidden_field.fill_random()
-enemy_field = Field(field3)
+enemy_field = Field(None)
 enemy_field.print()
 
 continue_game = True
