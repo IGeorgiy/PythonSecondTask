@@ -84,6 +84,10 @@ class Field:
                 counter += 1
 
     def do_shot(self, x, y):
+        if x < 1 or x > 6:
+            raise ValueError("Координаты X выстрела неверные (Правильно: от 1 до 6)!")
+        if y < 1 or y > 6:
+            raise ValueError("Координаты Y выстрела неверные (Правильно: от 1 до 6)!")
         aim = self.__field[y-1][x-1]
         if isinstance(aim, EmptySpace):
             self.__field[y-1][x-1] = MissleShell()
