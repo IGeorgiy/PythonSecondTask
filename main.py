@@ -7,10 +7,8 @@ class Field:
         self.__two_cell_ships = 0
         self.__three_cell_ships = 0
         self.__field = [[EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()], [EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()], [EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()], [EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()], [EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()], [EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()]]
-        if ships is None:
-            self.__ships = []
-        else:
-            self.__ships = ships
+        self.__ships = []
+        if not (ships is None):
             if len(ships) > 0:
                 for ship in ships:
                     self.add_ship(ship)
