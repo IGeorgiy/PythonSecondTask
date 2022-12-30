@@ -112,8 +112,9 @@ class Field:
     def check_game_over(self):
         for ship in self.__ships:
             for ship_part in ship.parts:
-                if not ship_part.is_destroyed:
+                if not (ship_part.is_destroyed):
                     return False
+
         return True
 
 class FieldObject:
@@ -178,6 +179,19 @@ class MultiplyShotError(Exception):
     def __str__(self):
         return self.txt
 
+class Enemy:
+    def __init__(self):
+        self.do_shot = self.__generate_shot()
+    def __generate_shot(self):
+        list_x = [1, 2, 3, 4, 5, 6]
+        list_y = [1, 2, 3, 4, 5, 6]
+        random.shuffle(list_x)
+        random.shuffle(list_y)
+        for random_x in list_x:
+            for random_y in list_y:
+                yield (random_x, random_y)
+
+
 def player_input_shot():
         inp = input("Введите координаты выстрела через запятую (пример: x,y):")
         shot = str.split(inp, ',', 2)
@@ -186,9 +200,13 @@ def player_input_shot():
             return player_input_shot()
         return (int(shot[0]), int(shot[1]))
 
-def player_do_shot():
+def player_do_shot(enemy_hidden_field):
     shot = player_input_shot()
     enemy_hidden_field.do_shot(shot[0], shot[1])
+
+def enemy_do_shot(enemy, player_field):
+    shot = next(enemy.do_shot)
+    player_field.do_shot(shot[0], shot[1])
 
 field1 = [[EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()],
          [EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()],
@@ -211,6 +229,8 @@ field3 = [[EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(),
          [EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()],
          [EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()]]
 
+enemy = Enemy()
+
 continue_game = True
 while(continue_game):
     print("Поле игрока:")
@@ -223,10 +243,12 @@ while(continue_game):
     enemy_hidden_field.fill_random()
     enemy_hidden_field.print()
 
-    player_do_shot()
+    player_do_shot(enemy_hidden_field)
     if enemy_hidden_field.check_game_over():
         print("Победил игрок!")
         continue_game = False
+
+    enemy_do_shot(enemy, player_field)
 
     enemy_field = Field(field3)
     enemy_field.print()
