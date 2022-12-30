@@ -87,6 +87,9 @@ class Field:
             raise MultiplyShotError()
         return False
 
+    def set_cell_value(self, index_x, index_y, value):
+        self.__field[index_y][index_x] = value
+
     def fill_random(self):
         self.__add_random_ship(3, bool(random.getrandbits(1)))
         self.__add_random_ship(2, bool(random.getrandbits(1)))
@@ -129,8 +132,7 @@ class EmptySpace(FieldObject):
         self.representation = 'O'
 
 class ShipPart(FieldObject):
-    def __init__(self, ship):
-        self.__ship = ship
+    def __init__(self):
         self.representation = "\u25A1"
         self.__is_destroyed = False
     @property
@@ -150,7 +152,7 @@ class Ship:
         self.is_vertical = is_vertical
         self.parts = []
         for i in range(length):
-            self.parts.append(ShipPart(self))
+            self.parts.append(ShipPart())
 
     @staticmethod
     def __position_check(pos_x, pos_y):
@@ -202,13 +204,19 @@ def player_input_shot():
         return (int(shot[0]), int(shot[1]))
 
 
-def player_do_shot(enemy_hidden_field):
+def player_do_shot(enemy_hidden_field, enemy_field):
     try:
         shot = player_input_shot()
-        enemy_hidden_field.do_shot(shot[0], shot[1])
+        shot_result = enemy_hidden_field.do_shot(shot[0], shot[1])
+        if shot_result:
+            destroyed_ship_part = ShipPart()
+            destroyed_ship_part.destroy()
+            enemy_field.set_cell_value(shot[0]-1, shot[1]-1, destroyed_ship_part)
+        else:
+            enemy_field.set_cell_value(shot[0] - 1, shot[1] - 1, MissleShell())
     except Exception as ex:
         print(ex)
-        player_do_shot(enemy_hidden_field)
+        player_do_shot(enemy_hidden_field, enemy_field)
 
 
 def enemy_do_shot(enemy, player_field):
@@ -229,12 +237,13 @@ print("")
 print("Поле врага:")
 enemy_hidden_field = Field(field2)
 enemy_hidden_field.fill_random()
-enemy_hidden_field.print()
+enemy_field = Field(field3)
+enemy_field.print()
 
 continue_game = True
 while continue_game:
 
-    player_do_shot(enemy_hidden_field)
+    player_do_shot(enemy_hidden_field, enemy_field)
     if enemy_hidden_field.check_game_over():
         print("Победил игрок!")
         continue_game = False
@@ -248,4 +257,4 @@ while continue_game:
     player_field.print()
     print("")
     print("Поле врага:")
-    enemy_hidden_field.print()
+    enemy_field.print()
