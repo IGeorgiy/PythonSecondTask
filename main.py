@@ -1,5 +1,6 @@
 import random
 
+
 class Field:
     def __init__(self, objects_collection):
         self.__one_cell_ships = 0
@@ -7,6 +8,7 @@ class Field:
         self.__three_cell_ships = 0
         self.__field = objects_collection
         self.__ships = []
+
     def print(self):
             print("  | 1 | 2 | 3 | 4 | 5 | 6 |")
             for index, value in enumerate(self.__field):
@@ -57,7 +59,7 @@ class Field:
             if ship.position_x < 6:
                 if not(isinstance(self.__field[ship_part_position_y - 1][ship_part_position_x], EmptySpace)):
                     raise CoordinatesError(ship_part_position_x, ship_part_position_y)
-            counter+=1
+            counter += 1
 
     def add_ship(self, ship):
         self.__is_possible_to_place(ship)
@@ -95,8 +97,8 @@ class Field:
         self.__add_random_ship(1, bool(random.getrandbits(1)))
 
     def __add_random_ship(self, length, is_vertical):
-        list_x = [1,2,3,4,5,6]
-        list_y = [1,2,3,4,5,6]
+        list_x = [1, 2, 3, 4, 5, 6]
+        list_y = [1, 2, 3, 4, 5, 6]
         random.shuffle(list_x)
         random.shuffle(list_y)
         for random_x in list_x:
@@ -105,8 +107,7 @@ class Field:
                 try:
                     self.add_ship(ship)
                     return
-                except Exception as ex:
-                    ex1 = ex
+                except:
                     continue
 
     def check_game_over(self):
@@ -174,7 +175,7 @@ class CoordinatesError(Exception):
         return self.txt
 
 class MultiplyShotError(Exception):
-    def __init__(self, x, y):
+    def __init__(self):
         self.txt = "Выстрел по данным координатам уже произведен!"
     def __str__(self):
         return self.txt
@@ -189,7 +190,7 @@ class Enemy:
         random.shuffle(list_y)
         for random_x in list_x:
             for random_y in list_y:
-                yield (random_x, random_y)
+                yield random_x, random_y
 
 
 def player_input_shot():
@@ -200,48 +201,38 @@ def player_input_shot():
             return player_input_shot()
         return (int(shot[0]), int(shot[1]))
 
+
 def player_do_shot(enemy_hidden_field):
-    shot = player_input_shot()
-    enemy_hidden_field.do_shot(shot[0], shot[1])
+    try:
+        shot = player_input_shot()
+        enemy_hidden_field.do_shot(shot[0], shot[1])
+    except Exception as ex:
+        print(ex)
+        player_do_shot(enemy_hidden_field)
+
 
 def enemy_do_shot(enemy, player_field):
     shot = next(enemy.do_shot)
     player_field.do_shot(shot[0], shot[1])
 
-field1 = [[EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()],
-         [EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()],
-         [EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()],
-         [EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()],
-         [EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()],
-         [EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()]]
 
-field2 = [[EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()],
-         [EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()],
-         [EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()],
-         [EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()],
-         [EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()],
-         [EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()]]
-
-field3 = [[EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()],
-         [EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()],
-         [EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()],
-         [EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()],
-         [EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()],
-         [EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()]]
-
+field1 = [[EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()], [EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()], [EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()], [EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()], [EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()], [EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()]]
+field2 = [[EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()], [EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()], [EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()], [EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()], [EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()], [EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()]]
+field3 = [[EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()], [EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()], [EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()], [EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()], [EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()], [EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace(), EmptySpace()]]
 enemy = Enemy()
 
+print("Поле игрока:")
+player_field = Field(field1)
+player_field.fill_random()
+player_field.print()
+print("")
+print("Поле врага:")
+enemy_hidden_field = Field(field2)
+enemy_hidden_field.fill_random()
+enemy_hidden_field.print()
+
 continue_game = True
-while(continue_game):
-    print("Поле игрока:")
-    player_field = Field(field1)
-    player_field.fill_random()
-    player_field.print()
-    print("")
-    print("Поле врага:")
-    enemy_hidden_field = Field(field2)
-    enemy_hidden_field.fill_random()
-    enemy_hidden_field.print()
+while continue_game:
 
     player_do_shot(enemy_hidden_field)
     if enemy_hidden_field.check_game_over():
@@ -249,7 +240,12 @@ while(continue_game):
         continue_game = False
 
     enemy_do_shot(enemy, player_field)
+    if player_field.check_game_over():
+        print("Победил компьютер!")
+        continue_game = False
 
-    enemy_field = Field(field3)
-    enemy_field.print()
-
+    print("Поле игрока:")
+    player_field.print()
+    print("")
+    print("Поле врага:")
+    enemy_hidden_field.print()
