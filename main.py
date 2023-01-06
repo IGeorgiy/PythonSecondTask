@@ -15,7 +15,6 @@ class Field:
             else:
                 self.fill_random()
 
-
     def print(self):
             print("  | 1 | 2 | 3 | 4 | 5 | 6 |")
             for index, value in enumerate(self.__field):
@@ -121,37 +120,44 @@ class Field:
                 try:
                     self.add_ship(ship)
                     return
-                except:
+                finally:
                     continue
 
     def check_game_over(self):
         for ship in self.__ships:
             for ship_part in ship.parts:
-                if not (ship_part.is_destroyed):
+                if not ship_part.is_destroyed:
                     return False
 
         return True
 
+
 class FieldObject:
     def __init__(self):
         self.representation = ''
+
     def __str__(self):
         return self.representation
+
 
 class EmptySpace(FieldObject):
     def __init__(self):
         self.representation = 'O'
 
+
 class ShipPart(FieldObject):
     def __init__(self):
         self.representation = "\u25A1"
         self.__is_destroyed = False
+
     @property
     def is_destroyed(self):
         return self.__is_destroyed
+
     def destroy(self):
         self.__is_destroyed = True
         self.representation = "X"
+
 
 class Ship:
     def __init__(self, position_x, position_y, length, is_vertical=False):
@@ -177,26 +183,34 @@ class Ship:
         if length < 1 or length > 3:
             raise ValueError("Длинна корабля задана неверно (значение должно быть от 1 до 3)!")
 
+
 class MissleShell(FieldObject):
     def __init__(self):
         self.representation = "T"
 
+
 class CoordinatesError(Exception):
     def __init__(self, x, y):
         self.txt = f"Неверное значение координат x:{x}, y:{y}!"
+
     def __str__(self):
         return self.txt
+
 
 class MultiplyShotError(Exception):
     def __init__(self):
         self.txt = "Выстрел по данным координатам уже произведен!"
+
     def __str__(self):
         return self.txt
+
 
 class Enemy:
     def __init__(self):
         self.do_shot = self.__generate_shot()
-    def __generate_shot(self):
+
+    @staticmethod
+    def __generate_shot():
         list_x = [1, 2, 3, 4, 5, 6]
         list_y = [1, 2, 3, 4, 5, 6]
         random.shuffle(list_x)
@@ -212,7 +226,7 @@ def player_input_shot():
         if not shot[0].isdigit() or not shot[1].isdigit():
             print("Введенные координаты должны быть цифрами!")
             return player_input_shot()
-        return (int(shot[0]), int(shot[1]))
+        return int(shot[0]), int(shot[1])
 
 
 def player_do_shot(enemy_hidden_field, enemy_field):
